@@ -1,0 +1,18 @@
+<inkscape-extension>
+    <_name>Export Layer Slices</_name>
+    <id>org.inkscape.output.layer2png</id>
+	<dependency type="extension">org.inkscape.output.svg.inkscape</dependency>
+	<dependency type="executable" location="extensions">layer2png.py</dependency>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+        <param name="directory" type="string" _gui-text="Directory">none</param>
+        <param name="layer" type="string" _gui-text="Layer with Slices:">slices</param>
+    <effect>
+                <object-type>all</object-type>
+                <effects-menu>
+                      <submenu _name="Export"/>
+                </effects-menu>
+    </effect>
+    <script>
+        <command reldir="extensions" interpreter="python">layer2png.py</command>
+    </script>
+</inkscape-extension>

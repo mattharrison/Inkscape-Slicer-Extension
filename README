@@ -1,0 +1,46 @@
+Inkscape Layer Slicer
+=====================
+
+It can be useful to "slice" images and export the slices.  This
+extension facilitates that.
+
+Here's the process I've used for slicing web layout with
+Inkscape. Create your webpage layout (set page units to "px",
+width/height appropriately and snap to 1 pixel intervals. This should
+allow pixel perfect alignment). Then create a new layer, naming it
+slices. Draw rectangles over the areas you want to slice (set
+x,y,width,height to whole pixel values). Name these rectangles using
+the Object Properties found in the right click contextual menu (the
+saved images name will be based on that value, so name them something
+like "header" instead of the default/non-useful "rect4312"). 
+
+What the plugin then does is iterate over all of the rectangle
+definitions found in the slice layer and set the opacity of the slice
+rectangle to 0. (That allows you to make slightly transparent slices,
+which are easier to deal with than invisible ones) It then creates
+pngs for every slice. After completing the slicing, it then sets all
+the slice rectangles to red at 25% opacity. To continue working on
+your design without having to deal with the slices being selected,
+just "lock" the slice layer and your clicks should fall through. You
+can also click the "eye" on the slice layer to not view it.
+
+LICENSE
+=======
+
+GPL2
+
+Installation
+============
+
+Put the .inx file and .py file in ~/.inkscape/extensions/ and restart
+inkscape.
+
+Status
+======
+
+I've used this since 2007 for simple web graphics and doing
+presentation images.  It was submitted to Inkscape for inclusion but
+rejected because it clobbers existing exported files.
+
+See https://bugs.launchpad.net/inkscape/+bug/169985
+
