@@ -41,8 +41,13 @@ import os
 import sys
 import logging
 import tempfile
-import xml.etree.ElementTree as et
-from xml import xpath
+try:
+    import xml.etree.ElementTree as et
+except ImportError, e:
+    try:
+        from lxml import etree as et
+    except:
+        sys.exit(_('The fantastic lxml wrapper for libxml2 is required by inkex.py and therefore this extension. Please download and install the latest version from http://cheeseshop.python.org/pypi/lxml/, or install it through your package manager by a command like: sudo apt-get install python-lxml'))
 
 sys.path.append('/usr/share/inkscape/extensions')
 
