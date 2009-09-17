@@ -64,6 +64,9 @@ class ExportSlices(inkex.Effect):
                                      action="store", type="string",
                                      dest="layer_name", default="slices",
                                      help="Layer with slices (rects) in it")
+        self.OptionParser.add_option("-o", "--overwrite",
+                                     action="store", type="inkbool", default=False,
+                                     help="Overwrite existing exports?")
         
     def log(self, text):
         logging.log(logging.DEBUG, text)
@@ -146,10 +149,13 @@ class ExportSlices(inkex.Effect):
         name = "%s.png" % node_id
         directory = self.options.directory
         filename = os.path.join(directory, name)
-        command = "inkscape -i %s -e %s %s " % (node_id, filename, svg_file) 
-        logging.log(logging.DEBUG, "COMMAND %s" % command)
-        f = os.popen(command,'r')
-        f.close()
+        if self.options.overwrite or not os.path.exists(filename):
+            command = "inkscape -i %s -e %s %s " % (node_id, filename, svg_file)
+            logging.log(logging.DEBUG, "COMMAND %s" % command)
+            f = os.popen(command,'r')
+            f.close()
+        else:
+            logging.log(logging.DEBUG, "Export exists (%s) not overwriting" % filename)
 
 def _main():
 

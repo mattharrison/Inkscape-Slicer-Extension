@@ -6,6 +6,7 @@
 	<dependency type="executable" location="extensions">inkex.py</dependency>
         <param name="directory" type="string" _gui-text="Directory">none</param>
         <param name="layer" type="string" _gui-text="Layer with Slices:">slices</param>
+        <param name="overwrite" type="boolean" _gui-text="Overwrite existing exports">true</param>
     <effect>
                 <object-type>all</object-type>
                 <effects-menu>
