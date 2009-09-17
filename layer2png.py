@@ -49,8 +49,7 @@ sys.path.append('/usr/share/inkscape/extensions')
 import inkex
 import simplestyle
 
-logging.basicConfig(filename="/tmp/inklog.log", level=logging.DEBUG)
-#logging.basicConfig(filename=os.path.join(tempfile.gettempdir(), 'inklog.log'), level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(tempfile.gettempdir(), 'inklog.log'), level=logging.DEBUG)
 
 class ExportSlices(inkex.Effect):
     """Exports all rectangles in the current layer"""
@@ -68,9 +67,6 @@ class ExportSlices(inkex.Effect):
                                      action="store", type="inkbool", default=False,
                                      help="Overwrite existing exports?")
         
-    def log(self, text):
-        logging.log(logging.DEBUG, text)
-
     def effect(self):
         # set opacity to zero in slices
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
@@ -90,16 +86,12 @@ class ExportSlices(inkex.Effect):
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
             self.pink_color(node)
 
-        self.log('FILE %s' % __file__)
-
     def get_layer_nodes(self, document, layer_name):
         """
         given an xml document (etree), and the name of a layer one
         that contains the rectangles defining slices, return the nodes
         of the rectangles.
         """
-        logging.log(logging.DEBUG, 'doc %s %s' %(document, dir(document)))
-
         #get layer we intend to slice
         slice_node = None
         slice_layer = document.findall('{http://www.w3.org/2000/svg}g')
