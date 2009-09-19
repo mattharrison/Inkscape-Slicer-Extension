@@ -32,8 +32,13 @@ GPL2
 Installation
 ============
 
-Put the .inx file and .py file in ~/.inkscape/extensions/ and restart
+Put the .inx file and .py file in ~/.config/inkscape/extensions/ and restart
 inkscape.
+
+For global installation place in /usr/share/inkscape/extensions (on
+gentoo, your distro may vary)
+
+For MS place in \Inkscape\share\extensions\
 
 Status
 ======
