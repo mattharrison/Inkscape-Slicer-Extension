@@ -41,6 +41,13 @@ import os
 import sys
 import logging
 import tempfile
+
+try:
+    from subprocess import Popen, PIPE
+    bsubprocess = True
+except:
+    bsubprocess = False
+    
 try:
     import xml.etree.ElementTree as et
 except ImportError, e:
@@ -73,6 +80,7 @@ class ExportSlices(inkex.Effect):
                                      help="Overwrite existing exports?")
         
     def effect(self):
+        logging.log(logging.DEBUG, "COMMAND LINE %s" % sys.argv)
         # set opacity to zero in slices
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
             self.clear_color(node)
@@ -141,6 +149,9 @@ class ExportSlices(inkex.Effect):
   
         
     def export_node(self, node):
+        """
+        Get the id attribute from the node and export it using the id as a name
+        """
         svg_file = self.args[-1]
         node_id = node.attrib['id']
         name = "%s.png" % node_id
@@ -148,8 +159,14 @@ class ExportSlices(inkex.Effect):
         filename = os.path.join(directory, name)
         if self.options.overwrite or not os.path.exists(filename):
             command = "inkscape -i %s -e %s %s " % (node_id, filename, svg_file)
+            if bsubprocess:
+                p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+                return_code = p.wait()
+                f = p.stdout
+                err = p.stderr
+            else:
+                _, f, err = os.open3(command)
             logging.log(logging.DEBUG, "COMMAND %s" % command)
-            f = os.popen(command,'r')
             f.close()
         else:
             logging.log(logging.DEBUG, "Export exists (%s) not overwriting" % filename)
