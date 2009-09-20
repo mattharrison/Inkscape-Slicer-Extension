@@ -67,6 +67,10 @@ class ExportSlices(inkex.Effect):
     """Exports all rectangles in the current layer"""
     def __init__(self):
         inkex.Effect.__init__(self)
+        self.OptionParser.add_option("--tab",
+                                     action="store", type="string", 
+                                     dest="tab", default="sampling",
+                                     help="The selected UI-tab when OK was pressed")
         self.OptionParser.add_option("-d", "--directory",
                                      action="store", type="string", 
                                      dest="directory", default=os.path.expanduser("~"),
