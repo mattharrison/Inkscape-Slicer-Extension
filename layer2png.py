@@ -179,11 +179,11 @@ class ExportSlices(inkex.Effect):
         name = "%s.png" % node_id
         directory = self.options.directory
         filename = os.path.join(directory, name)
-        color = '#555555' # grey
-        if self.options.overwrite:
-            color = '#ff0000' # red
+        color = '#555555' # grey - skipping
+        if self.options.overwrite or not os.path.exists(filename):
+            color = '#ff0000' # red - overwritten
             if not os.path.exists(filename):
-                color = '#00ff00' # green
+                color = '#00ff00' # green - new export
             command = "inkscape -i %s -e %s %s " % (node_id, filename, svg_file)
             if bsubprocess:
                 p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
