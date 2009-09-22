@@ -55,3 +55,5 @@ rejected because it clobbers existing exported files.
 
 See https://bugs.launchpad.net/inkscape/+bug/169985
 
+Note that it now includes an option to overwrite or not existing
+files.
