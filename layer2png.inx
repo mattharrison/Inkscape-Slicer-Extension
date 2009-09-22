@@ -5,6 +5,10 @@
     <dependency type="extension">org.inkscape.output.svg.inkscape</dependency>
     <dependency type="executable" location="extensions">layer2png.py</dependency>
     <dependency type="executable" location="extensions">inkex.py</dependency>
+    <!-- Using a tab to have help documentation in one tab.  If no tab
+         is desired remove the param@tab and page elements.  Note that
+         there is a corresponding tab option in the python
+         implementation -->
     <param name="tab" type="notebook">
       <page name="Slicer" _gui_text="Slicer">
         <param name="directory" type="string" _gui-text="Directory"></param>
@@ -12,11 +16,13 @@
         <param name="overwrite" type="boolean" _gui-text="Overwrite existing exports">true</param>
       </page>
       <page name="desc" _gui-text="Help">
-        <_param name="slicerhelp" type="description">This effect slices images, which can be useful for webdesign.  In order to use it, create a new layer container squares that define the slices.  Slices may overlap.  It is also useful to set Document Properties units to "px" and use whole integer sizes for rectangles and snap to grid.  Note that the slice ID ("Id" field of "Object Properties" right click contextual menu) of the rectangle is used to determine the filename (the suffix of .png is added).  When invoked any color settings on the layer rectangles is ignored and the images below them are exported to the directory choosen.  If overwrite is not checked, then if an existing file with that name exists, the export will not happen.   After export all the rectangles in the export layer are set to pink.  It is useful to hide and lock the export layer while doing work so it is not distracting.
+        <_param name="slicerhelp" type="description">This effect slices images, which can be useful for webdesign.  In order to use it, create a new layer container squares that define the slices.  Slices may overlap.  It is also useful to set Document Properties units to "px" and use whole integer sizes for rectangles and snap to grid.  Note that the slice ID ("Id" field of "Object Properties" right click contextual menu) of the rectangle is used to determine the filename (the suffix of .png is added).  When invoked any color settings on the layer rectangles is ignored and the images below them are exported to the directory choosen.  If overwrite is not checked, then if an existing file with that name exists, the export will not happen.   After export all the rectangles in the export layer are set to different color (red-overwrote a file, green-wrote a new file, grey-skipped (not overwritting)).  It is useful to hide and lock the export layer while doing work so it is not distracting.
         </_param>
       </page>
     </param>
 
+    <!-- Live preview doesn't make sense so we add this attribute to
+         remove it -->
     <effect needs-live-preview="false">
       <object-type>all</object-type>
       <effects-menu>

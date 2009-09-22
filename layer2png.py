@@ -30,8 +30,12 @@ The output filenames are based on the "Id" field of "Object Properties"
 right click contextual menu of the rectangles.
 
 One side effect is that after exporting, it sets the slice rectangles
-to red with a 25% opacity.  (If you want to hide them, just click on the
-eye next to the layer).
+to different colors with a 25% opacity.  (If you want to hide them,
+just click on the eye next to the layer).
+
+  * red - overwrote a file
+  * green - wrote a new file
+  * grey - skipped (not overwriting)
 
 For good pixel exports set the Document Properties, default units to "px"
 and the width/height to the real size. (I use 1024x768)
@@ -67,6 +71,10 @@ class ExportSlices(inkex.Effect):
     """Exports all rectangles in the current layer"""
     def __init__(self):
         inkex.Effect.__init__(self)
+        self.color_map = {} # change color based on overwrite
+                            # green - new export
+                            # red - overwrite
+                            # grey - not exported (no overwrite)
         self.OptionParser.add_option("--tab",
                                      action="store", type="string", 
                                      dest="tab", default="sampling",
@@ -84,6 +92,11 @@ class ExportSlices(inkex.Effect):
                                      help="Overwrite existing exports?")
         
     def effect(self):
+        """
+        In addition to the command line parameters a (temp) file
+        containing the contents of the svg is passed on the command
+        line (self.args[-1])
+        """
         logging.log(logging.DEBUG, "COMMAND LINE %s" % sys.argv)
         # set opacity to zero in slices
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
@@ -136,7 +149,9 @@ class ExportSlices(inkex.Effect):
         set color to red and opacity to 25%
         
         """
-        self.update_node_attrib(node, 'style', {'fill':'#ff0000', 'opacity':'.25'})
+        node_id = node.attrib['id']
+        color = self.color_map[node_id]
+        self.update_node_attrib(node, 'style', {'fill': color, 'opacity':'.25'})
 
     def update_node_attrib(self, node, attrib_name, attribs_to_overwrite):
         """
@@ -155,13 +170,20 @@ class ExportSlices(inkex.Effect):
     def export_node(self, node):
         """
         Get the id attribute from the node and export it using the id as a name
+
+        Eating the stderr, so it doesn't show up in a error box after
+        running the script.
         """
         svg_file = self.args[-1]
         node_id = node.attrib['id']
         name = "%s.png" % node_id
         directory = self.options.directory
         filename = os.path.join(directory, name)
-        if self.options.overwrite or not os.path.exists(filename):
+        color = '#555555' # grey
+        if self.options.overwrite:
+            color = '#ff0000' # red
+            if not os.path.exists(filename):
+                color = '#00ff00' # green
             command = "inkscape -i %s -e %s %s " % (node_id, filename, svg_file)
             if bsubprocess:
                 p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
@@ -174,9 +196,18 @@ class ExportSlices(inkex.Effect):
             f.close()
         else:
             logging.log(logging.DEBUG, "Export exists (%s) not overwriting" % filename)
-
+        self.color_map[node_id] = color
 def _main():
-
+    """
+    Normal flow is something like this:
+      * subclass inkex.Effect
+      * call affect() which:
+        * provides current (svg) image in tmp file (sys.args[-1])
+        * reads it into self.document (etree)
+        * modifies in self.effect()
+        * spits out errors to stderr
+        * spits out result/new image to stdout
+    """
     e = ExportSlices()
     e.affect()
     

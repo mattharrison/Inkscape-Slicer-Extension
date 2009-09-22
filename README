@@ -19,15 +19,21 @@ definitions found in the slice layer and set the opacity of the slice
 rectangle to 0. (That allows you to make slightly transparent slices,
 which are easier to deal with than invisible ones) It then creates
 pngs for every slice. After completing the slicing, it then sets all
-the slice rectangles to red at 25% opacity. To continue working on
-your design without having to deal with the slices being selected,
-just "lock" the slice layer and your clicks should fall through. You
-can also click the "eye" on the slice layer to not view it.
+the slice to a different color at 25% opacity. 
+
+  * red - overwrote a file
+  * green - wrote a new file
+  * grey - skipped (not overwriting)
+
+To continue working on your design without having to deal with the
+slices being selected, just "lock" the slice layer and your clicks
+should fall through. You can also click the "eye" on the slice layer
+to not view it.
 
 LICENSE
 =======
 
-GPL2
+        GPL2
 
 Installation
 ============
