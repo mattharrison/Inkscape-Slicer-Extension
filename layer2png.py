@@ -114,7 +114,7 @@ class ExportSlices(inkex.Effect):
 
         #change slice colors to pink and set opacity to 25% in real document
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
-            self.pink_color(node)
+            self.change_color(node)
 
     def get_layer_nodes(self, document, layer_name):
         """
@@ -144,9 +144,9 @@ class ExportSlices(inkex.Effect):
         '''
         self.update_node_attrib(node, 'style', {'stroke':'none', 'opacity':'0'})
 
-    def pink_color(self, node):
+    def change_color(self, node):
         """
-        set color to red and opacity to 25%
+        set color from color_map and set opacity to 25%
         
         """
         node_id = node.attrib['id']
