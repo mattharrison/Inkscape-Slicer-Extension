@@ -97,11 +97,23 @@ class ExportSlices(inkex.Effect):
         containing the contents of the svg is passed on the command
         line (self.args[-1])
         """
+        if not self.layer_exists(self.options.layer_name):
+            sys.stderr.write("Export layer: '%s' does not exist.  Please see 'Help' tab for instructions" % self.options.layer_name)
+            logging.log(logging.DEBUG, "No slice layer: %s" % self.options.layer_name)
+            return
+        
         logging.log(logging.DEBUG, "COMMAND LINE %s" % sys.argv)
         # set opacity to zero in slices
+        slices_found = False
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
+            slices_found = True
             self.clear_color(node)
 
+        if not slices_found:
+            sys.stderr.write("No rectangles defined in '%s' to slice.  Please see 'Help' tab for instructions" % self.options.layer_name)
+            logging.log(logging.DEBUG, "No rectangles defined in '%s' to slice" % self.options.layer_name)
+            return
+            
         # save new xml
         fout = open(self.args[-1], 'w')
         self.document.write(fout)
@@ -116,6 +128,10 @@ class ExportSlices(inkex.Effect):
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
             self.change_color(node)
 
+    def layer_exists(self, layer_name):
+        layer_nodes = self.get_layer_nodes(self.document, layer_name)
+        return layer_nodes != None
+            
     def get_layer_nodes(self, document, layer_name):
         """
         given an xml document (etree), and the name of a layer one
@@ -132,7 +148,7 @@ class ExportSlices(inkex.Effect):
 
         if slice_node is not None:     
             return slice_node.findall('{http://www.w3.org/2000/svg}rect')
-        return []
+        return slice_node
 
     def clear_color(self, node):
         '''
@@ -197,6 +213,8 @@ class ExportSlices(inkex.Effect):
         else:
             logging.log(logging.DEBUG, "Export exists (%s) not overwriting" % filename)
         self.color_map[node_id] = color
+
+        
 def _main():
     """
     Normal flow is something like this:
