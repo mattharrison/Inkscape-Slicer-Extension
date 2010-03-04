@@ -97,6 +97,9 @@ class ExportSlices(inkex.Effect):
         containing the contents of the svg is passed on the command
         line (self.args[-1])
         """
+        if not os.path.isdir(self.options.directory):
+            os.makedirs(self.options.directory)
+        
         if not self.layer_exists(self.options.layer_name):
             sys.stderr.write("Export layer: '%s' does not exist.  Please see 'Help' tab for instructions" % self.options.layer_name)
             logging.log(logging.DEBUG, "No slice layer: %s" % self.options.layer_name)
