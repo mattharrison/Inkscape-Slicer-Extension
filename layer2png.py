@@ -2,7 +2,7 @@
 """
 layer2png.py
 
-Copyright (C) 2007-2009 Matt Harrison, matthewharrison [at] gmail.com
+Copyright (C) 2007-2010 Matt Harrison, matthewharrison [at] gmail.com
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ class ExportSlices(inkex.Effect):
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
             self.export_node(node)
 
-        #change slice colors to pink and set opacity to 25% in real document
+        #change slice colors to grey/green/red and set opacity to 25% in real document
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
             self.change_color(node)
 
