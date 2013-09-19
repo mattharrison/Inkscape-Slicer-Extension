@@ -87,10 +87,17 @@ class ExportSlices(inkex.Effect):
                                      action="store", type="string",
                                      dest="layer_name", default="slices",
                                      help="Layer with slices (rects) in it")
+        self.OptionParser.add_option("-i", "--iconmode",
+                                     action="store", type="inkbool", default=False,
+                                     help="Icon export mode")
+        self.OptionParser.add_option("-s", "--sizes",
+                                     action="store", type="string",
+                                     dest="sizes", default="128, 64, 48, 32, 24, 16",
+                                     help="sizes to export comma separated")
         self.OptionParser.add_option("-o", "--overwrite",
                                      action="store", type="inkbool", default=False,
                                      help="Overwrite existing exports?")
-        
+
     def effect(self):
         """
         In addition to the command line parameters a (temp) file
@@ -125,7 +132,13 @@ class ExportSlices(inkex.Effect):
         # in case there are overlapping rects, clear them all out before
         # saving any
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
-            self.export_node(node)
+            if self.options.iconmode:
+                for s in self.options.sizes.split(', '):
+                    if s.isdigit():
+                        pngSize = int(s) 
+                        self.export_resized(node, pngSize, pngSize)
+            else:
+                self.export_original_size(node)
 
         #change slice colors to grey/green/red and set opacity to 25% in real document
         for node in self.get_layer_nodes(self.document, self.options.layer_name):
@@ -134,7 +147,7 @@ class ExportSlices(inkex.Effect):
     def layer_exists(self, layer_name):
         layer_nodes = self.get_layer_nodes(self.document, layer_name)
         return layer_nodes != None
-            
+
     def get_layer_nodes(self, document, layer_name):
         """
         given an xml document (etree), and the name of a layer one
@@ -184,26 +197,22 @@ class ExportSlices(inkex.Effect):
             value_dict[key] = value
         new_value = simplestyle.formatStyle(value_dict)
         node.attrib[attrib_name] = new_value
-  
-        
-    def export_node(self, node):
-        """
-        Get the id attribute from the node and export it using the id as a name
 
+    def export_node(self, node, file_name, height, width):
+        """
         Eating the stderr, so it doesn't show up in a error box after
         running the script.
         """
         svg_file = self.args[-1]
         node_id = node.attrib['id']
-        name = "%s.png" % node_id
         directory = self.options.directory
-        filename = os.path.join(directory, name)
+        filename = os.path.join(directory, file_name)
         color = '#555555' # grey - skipping
         if self.options.overwrite or not os.path.exists(filename):
             color = '#ff0000' # red - overwritten
             if not os.path.exists(filename):
                 color = '#00ff00' # green - new export
-            command = "inkscape -i %s -e %s %s " % (node_id, filename, svg_file)
+            command = "inkscape -i %s -e %s %s -h %s -w %s" % (node_id, filename, svg_file, height, width)
             if bsubprocess:
                 p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                 return_code = p.wait()
@@ -217,7 +226,26 @@ class ExportSlices(inkex.Effect):
             logging.log(logging.DEBUG, "Export exists (%s) not overwriting" % filename)
         self.color_map[node_id] = color
 
-        
+    def export_resized(self, node, height, width):
+        """
+        Get the id attribute from the node and export it using the id as a name
+        Adds size of exported image in the name too
+        """
+        node_id = node.attrib['id']
+        name = "%s_%s_%s.png" % (node_id, height, width)
+        self.export_node(node, name, height, width)
+
+    def export_original_size(self, node):
+        """
+        Get the id attribute from the node and export it using the id as a name
+        Exports an image with same size of slice
+        """
+        node_id = node.attrib['id']
+        name = "%s.png" % (node_id)
+        height = node.attrib['height']
+        width = node.attrib['width']
+        self.export_node(node, name, height, width)
+
 def _main():
     """
     Normal flow is something like this:
