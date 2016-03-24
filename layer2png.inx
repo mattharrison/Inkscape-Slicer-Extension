@@ -12,6 +12,7 @@
     <param name="tab" type="notebook">
       <page name="Slicer" _gui_text="Slicer">
         <param name="directory" type="string" _gui-text="Directory"></param>
+        <param name="dpi" type="string" _gui-text="DPI">300</param>
         <param name="iconmode" type="boolean" _gui-text="Icon mode">false</param>
         <param name="sizes" type="string" _gui-text="Sizes">128, 64, 48, 32, 24, 16</param>
         <param name="layer" type="string" _gui-text="Layer with Slices:">slices</param>

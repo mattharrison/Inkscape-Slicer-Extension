@@ -54,7 +54,7 @@ except:
     
 try:
     import xml.etree.ElementTree as et
-except ImportError, e:
+except ImportError as e:
     try:
         from lxml import etree as et
     except:
@@ -97,6 +97,11 @@ class ExportSlices(inkex.Effect):
         self.OptionParser.add_option("-o", "--overwrite",
                                      action="store", type="inkbool", default=False,
                                      help="Overwrite existing exports?")
+        self.OptionParser.add_option("--dpi",
+                                     action="store", type="string",
+                                     dest="dpi", default="300",
+                                     help="Dots per inch (300 default)")
+        
 
     def effect(self):
         """
@@ -198,7 +203,7 @@ class ExportSlices(inkex.Effect):
         new_value = simplestyle.formatStyle(value_dict)
         node.attrib[attrib_name] = new_value
 
-    def export_node(self, node, file_name, height, width):
+    def export_node(self, node, file_name, height=None, width=None):
         """
         Eating the stderr, so it doesn't show up in a error box after
         running the script.
@@ -212,7 +217,12 @@ class ExportSlices(inkex.Effect):
             color = '#ff0000' # red - overwritten
             if not os.path.exists(filename):
                 color = '#00ff00' # green - new export
-            command = "inkscape -i %s -e %s %s -h %s -w %s" % (node_id, filename, svg_file, height, width)
+            if self.options.dpi:
+                command = "inkscape -i %s -e %s %s -d %s" % (node_id,
+                        filename, svg_file, self.options.dpi)
+            else:
+                command = "inkscape -i %s -e %s %s -h %s -w %s -d %s" % (node_id,
+                        filename, svg_file, height, width, self.options.dpi)
             if bsubprocess:
                 p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
                 return_code = p.wait()
