@@ -57,3 +57,8 @@ See https://bugs.launchpad.net/inkscape/+bug/169985
 
 Note that it now includes an option to overwrite or not existing
 files.
+
+NEWS
+======
+
+* Oct 2019 - Attempting to get into Inkscape proper again. See https://gitlab.com/inkscape/extensions/merge_requests/139
